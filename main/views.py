@@ -56,12 +56,7 @@ def post_error(projectname):
     db.session.add(err)
     db.session.commit()
 
-    socketio.send({
-        'message': data['message'],
-        'time': str(cur_time),
-        'type': data['type'],
-        'user_agent': data['user_agent'],
-    }, namespace='/' + projectname)
+    socketio.send(err.serialize, namespace='/' + projectname)
 
     return jsonify({
         'success': True

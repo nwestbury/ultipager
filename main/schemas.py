@@ -3,9 +3,11 @@ from marshmallow import Schema, fields, validate, ValidationError
 from main import ma
 from main import models
 
+
 def isnumeric(string):
     if not string.isdigit():
         raise ValidationError('Must be only numbers')
+
 
 class ErrorSchema(Schema):
     message = fields.String(required=True,

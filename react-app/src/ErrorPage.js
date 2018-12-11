@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import io from 'socket.io-client';
 
 class ErrorPage extends Component {
     constructor() {
@@ -18,7 +19,13 @@ class ErrorPage extends Component {
             },
             errorlist: [],
         };
+
+        this.getRealtimeErrorData = this.getRealtimeErrorData.bind(this);
         this.getErrorData = this.getErrorData.bind(this);
+
+        const projectName = document.location.pathname.split('/')[1];
+        this.socket = io(document.location.origin + '/' + projectName);
+        this.socket.on('message', this.getRealtimeErrorData);
     }
     getErrorData(options={}) {
         const projectName = this.props.match.params.projectname;
@@ -43,8 +50,23 @@ class ErrorPage extends Component {
         );
     }
 
+    getRealtimeErrorData(errorObj) {
+        const {sort_by, sort_order} = this.state;
+        if (sort_by === 'time' && sort_order === 'desc') {
+            // Prepend error object to display and limit
+            const dataToDisplay = [errorObj, ...this.state.dataToDisplay]
+                                  .slice(0, this.state.limit);
+
+            this.setState({dataToDisplay});
+        }
+    }
+
     componentDidMount() {
-        this.getErrorData();
+        this.applyFilters();
+    }
+
+    componentWillUnmount() {
+        this.socket.off('message');
     }
 
     createErrorRow(errorItem) {
@@ -52,7 +74,7 @@ class ErrorPage extends Component {
     }
 
     applyFilters = e => {
-        e.preventDefault()
+        if (e) e.preventDefault();
         const {startDate, endDate, content} = this.state.errorFilter;
 
         if (startDate !== '' && endDate !== '' &&
