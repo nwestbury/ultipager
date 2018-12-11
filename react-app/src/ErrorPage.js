@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import io from 'socket.io-client';
 
 import NavBar from './NavBar';
+import ErrorTable from './ErrorTable';
 import Button from '@material-ui/core/Button';
 
 class ErrorPage extends Component {
@@ -9,105 +9,14 @@ class ErrorPage extends Component {
         super();
 
         this.state = {
-            dataToDisplay: [],
-            index: 0,
-            limit: 50,
-            sort_order: 'desc',
-            sort_by: 'time',
-            type: '',
             errorFilter: {
                 startDate: '',
                 endDate: '',
                 content: ''
             },
         };
-
-        this.getRealtimeErrorData = this.getRealtimeErrorData.bind(this);
-        this.getErrorData = this.getErrorData.bind(this);
-
-        const projectName = document.location.pathname.split('/')[1];
-        this.socket = io(document.location.origin + '/' + projectName);
-        this.socket.on('message', this.getRealtimeErrorData);
-    }
-    getErrorData(options) {
-        const projectName = this.props.match.params.projectname;
-
-        fetch(`/${projectName}/errors`, {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(options)
-        })
-        .then(res => res.json())
-        .then((result) => {
-                this.setState({
-                    dataToDisplay: result
-                });
-            },
-            (error) => {
-                console.error('HANDLE THIS ERROR BETTER!');
-            }
-        );
     }
 
-    getRealtimeErrorData(errorObj) {
-        const {sort_by, sort_order} = this.state;
-        if (sort_by === 'time' && sort_order === 'desc') {
-            // Prepend error object to display and limit
-            const dataToDisplay = [errorObj, ...this.state.dataToDisplay]
-                                  .slice(0, this.state.limit);
-
-            this.setState({dataToDisplay});
-        }
-    }
-
-    componentDidMount() {
-        const {errorid} = this.props.match.params;
-
-        const options = {
-            index: this.state.index,
-            limit: this.state.limit,
-        };
-        if (errorid) options.error_id = parseInt(errorid);
-        this.getErrorData(options);
-    }
-
-    componentWillUnmount() {
-        this.socket.off('message');
-    }
-
-    createErrorRow(errorItem) {
-        return (<li key={errorItem.id} onClick={()=>{}}>{errorItem.message}</li>);
-    }
-
-    applyFilters = e => {
-        if (e) e.preventDefault();
-        const {startDate, endDate, content} = this.state.errorFilter;
-
-        if (startDate !== '' && endDate !== '' &&
-            (new Date(startDate) > new Date(endDate))) {
-            alert('Please input valid date range');
-        }
-        // send api call, also re-render the component
-        const options = {
-            sort_order: this.state.sort_order,
-            sort_by: this.state.sort_by,
-            index: this.state.index,
-            limit: this.state.limit,
-            type: this.state.type,
-        }
-
-        if (startDate) options.start_date = new Date(startDate).toISOString();
-        if (endDate) options.end_date = new Date(endDate).toISOString();
-        if (content) options.message = content;
-        if (this.state.type) options.type = this.state.type;
-
-        console.log('options', options);
-
-        this.getErrorData(options)
-    }
     handleDateFromChange = e => {
         const errorFilter = { 
             startDate: e.target.value, 
@@ -123,28 +32,30 @@ class ErrorPage extends Component {
             startDate: this.state.errorFilter.startDate, 
             endDate: e.target.value,
             content: this.state.errorFilter.content 
-        }
+        };
         this.setState({
             errorFilter
-        })
+        });
     }
+
     handleContentChange = e => {
         const errorFilter = { 
             startDate: this.state.errorFilter.startDate,
             endDate: this.state.errorFilter.endDate,
             content: e.target.value 
-        }
+        };
         this.setState({
             errorFilter
-        })
+        });
     }
+
     render() {
-        const listItems = this.state.dataToDisplay.map(this.createErrorRow);
+        // const listItems = this.state.dataToDisplay.map(this.createErrorRow);
+        const {projectname, errorid} = this.props.match.params;
         return (
             <div className="error-page-main">
                 <NavBar></NavBar>
-                <div className="header"><h1>ULTI PAGER</h1></div>
-                <div className="body">
+                <div className="error-page-body">
                     <div className="error-filter">
                         <div className="error-filter-header"><h2>Log Filter</h2></div>
                         <div className="error-filter-body">
@@ -190,9 +101,10 @@ class ErrorPage extends Component {
                     <div className="error-log">
                         <div className="error-log-header"><h2>Error Log</h2></div>
                         <div className="error-log-body">
-                            <ul className="error-list">{listItems}</ul>
+                            <ErrorTable errorFilter={this.state.errorFilter}
+                                projectname={projectname} errorid={errorid}/>
+                        </div>
                     </div>
-                </div>
                 </div>
             </div>
         );

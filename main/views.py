@@ -162,8 +162,12 @@ def get_errors(projectname):
         .offset(offset)\
         .limit(limit)\
         .all()
+    count = q.count()
 
-    return jsonify([e.serialize for e in result])
+    return jsonify({
+        "errors": [e.serialize for e in result],
+        "num_errors": count,
+    })
 
 
 @app.route('/<projectname>/number', methods=['GET'])

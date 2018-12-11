@@ -37,4 +37,8 @@ body {
 
 .button {
   background-color: #4fa82f
+
+  .error-page-body {
+  margin-left: 5%;
+  width: 90%;
 }
