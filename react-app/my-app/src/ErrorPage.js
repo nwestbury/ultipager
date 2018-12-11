@@ -56,7 +56,8 @@ class ErrorPage extends Component {
         const endDate = this.state.errorFilter.endDate;
         console.log(new Date(startDate).getTime())
         console.log(new Date(endDate).getTime())
-        if ((new Date(startDate).getTime() > new Date(endDate).getTime())) {
+        if (startDate != '' && endDate != '' &&
+            (new Date(startDate).getTime() > new Date(endDate).getTime())) {
             alert('please input valid date range')
         }
         console.log('apply filters', this.state)
@@ -66,8 +67,8 @@ class ErrorPage extends Component {
             sort_by: this.state.sort_by,
             index: this.state.index,
             limit: this.state.limit,
-            start_date: new Date(this.state.errorFilter.startDate).toISOString(),
-            end_date: new Date(this.state.errorFilter.endDate).toISOString(),
+            start_date: startDate? new Date(this.state.errorFilter.startDate).toISOString(): '',
+            end_date: endDate? new Date(this.state.errorFilter.endDate).toISOString(): '',
             message: this.state.errorFilter.content,
             type: this.state.type
         }
