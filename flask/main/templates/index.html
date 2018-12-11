@@ -1,3 +1,20 @@
 <html>
 Test Hello World!
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.slim.js"></script>
+<script type="text/javascript" charset="utf-8">
+    var project_name = 'test'
+    var socket = io('http://' + document.domain + ':' + location.port + '/test');
+    socket.on('connect', function(){
+        console.log('a user connected');
+        socket.send('world');
+    });
+    socket.on('message',function(data) {
+        console.log('NEW ERROR!!!', data);
+    });
+
+    socket.on('test', function(){
+        console.log('stufff!!');
+    });
+
+</script>
 </html>

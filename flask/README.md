@@ -11,13 +11,19 @@ $ source venv/bin/activate
 $ pip3 install -r requirements.txt
 ```
 
-# Database setup
+## Database setup
 ```
 $ flask shell
 >>> import main
 >>> import main.models
 >>> main.db.create_all()
 >>> main.db.session.commit()
+```
+
+## Secret Setup
+```
+$ # create secrets.sh based off of secrets.sh.template
+$ bash secrets.sh
 ```
 
 ## Run Dev Server
