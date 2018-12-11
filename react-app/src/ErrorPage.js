@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import io from 'socket.io-client';
 
+import NavBar from './NavBar';
+import Button from '@material-ui/core/Button';
+
 class ErrorPage extends Component {
     constructor() {
         super();
@@ -140,6 +143,7 @@ class ErrorPage extends Component {
         const listItems = this.state.dataToDisplay.map(this.createErrorRow);
         return (
             <div className="error-page-main">
+                <NavBar></NavBar>
                 <div className="header"><h1>ULTI PAGER</h1></div>
                 <div className="body">
                     <div className="error-filter">
@@ -175,7 +179,9 @@ class ErrorPage extends Component {
                                             />  
                                         </span>
                                         <span className="filter-apply">
-                                            <button type="submit"> Apply </button>
+                                            <Button type="submit" variant="contained" color="primary">
+                                                Apply
+                                            </Button>
                                         </span>
                                     </div>
                                 </form>

@@ -5,3 +5,23 @@
 .error-page-main {
   background: green,
 }
+
+* {
+  font-family: 'Roboto', sans-serif;
+}
+
+.appBar {
+  position: 'relative',
+}
+
+.toolbarTitle {
+  flex: 1,
+}
+
+body {
+  background-color: white,
+}
+
+.linkNoStyle {
+  text-decoration: none; color: white;
+}

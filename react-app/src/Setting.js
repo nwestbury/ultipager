@@ -1,4 +1,5 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import NavBar from './NavBar';
 
 class Settings extends Component {
     constructor() {
@@ -71,6 +72,7 @@ class Settings extends Component {
     render() {
         return (
         <div className="settings">
+            <NavBar isSettings="true"></NavBar>
             <div className="header"><h1>Settings</h1></div>
             <div className="body">
                 <form onSubmit={this.saveSettings}>
