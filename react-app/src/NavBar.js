@@ -25,12 +25,12 @@ const styles = {
 const AppRouter = (props) => {
     const { classes, isSettings} = props;
     const projectName = document.location.pathname.split('/')[1];
-    const name = 'UtliPager' + (isSettings ? ': Settings' : '');
+    const name = 'UltiPager' + (isSettings ? ': Settings' : '');
     const icon = isSettings ? <HomeIcon /> : <SettingsIcon />;
     const linkTo = isSettings ? `/${projectName}` : `/${projectName}/settings`;
     return (
     <AppBar position="static">
-        <Toolbar>
+        <Toolbar className="nav-bar">
             <Typography variant="h6" color="inherit" className={classes.grow}>
                {name}
             </Typography>

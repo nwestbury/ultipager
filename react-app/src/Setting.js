@@ -1,6 +1,45 @@
 import React, { Component } from 'react';
 import NavBar from './NavBar';
+import { withStyles } from '@material-ui/core';
+import Button from '@material-ui/core/Button';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import FormControl from '@material-ui/core/FormControl';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import { greenA100 } from 'material-ui/styles/colors';
+import { green100 } from 'material-ui/styles/colors';
+import { green200 } from 'material-ui/styles/colors';
 
+const styles = theme => ({
+    main: {
+        width: 'auto',
+        display: 'block', // Fix IE 11 issue.
+        [theme.breakpoints.up(400 + theme.spacing.unit * 3 * 2)]: {
+            marginLeft: 'auto',
+            marginRight: 'auto',
+        },
+    },
+    paper: {
+        marginTop: theme.spacing.unit * 8,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme.spacing.unit * 3}px`,
+    },
+    avatar: {
+        margin: theme.spacing.unit,
+        backgroundColor: theme.palette.secondary.main,
+    },
+    form: {
+        width: '400', // Fix IE 11 issue.
+        marginTop: theme.spacing.unit,
+    },
+    submit: {
+        marginTop: theme.spacing.unit * 3,
+    },
+});
 class Settings extends Component {
     constructor() {
         super();
@@ -70,36 +109,48 @@ class Settings extends Component {
         });
     }
     render() {
+        const { classes } = this.props;
+        console.log('classes.submit', classes.submit)
         return (
-        <div className="settings">
-            <NavBar isSettings="true"></NavBar>
-            <div className="header"><h1>Settings</h1></div>
-            <div className="body">
-                <form onSubmit={this.saveSettings}>
-                    <div className="dev-name">
-                        <h2>Person Name</h2>
-                        <input
-                            onChange={this.handleNameChange}
-                            value={this.state.personInfo.name} 
-                            placeholder="Please input the person you want to alert for production error."
-                        />
-                    </div>
-                    <div className="dev-phone">
-                        <h2>Phone Number</h2>
-                        <input
-                            onChange={this.handleNumberChange}
-                            value={this.state.personInfo.number} 
-                            placeholder="(xxx) xxx-xxxx"
-                        />
-                    </div>
-                    <div className="setting-ok">
-                        <button type="submit"> OK </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-        )
+            <main className={classes.main}>
+                <NavBar isSettings="true"></NavBar>
+                <CssBaseline />
+                <div className="settings-wrapper">
+                    <Paper className={classes.paper}>
+                        <Typography component="h1" variant="h5">
+                            Person Information
+                        </Typography>
+                        <form className={classes.form}>
+                            <FormControl margin="normal" required fullWidth>
+                                <InputLabel htmlFor="name">Name</InputLabel>
+                                <Input
+                                    onChange={this.handleNameChange}
+                                    value={this.state.personInfo.name}
+                                    id="name" name="name" autoComplete="name" autoFocus />
+                            </FormControl>
+                            <FormControl margin="normal" required fullWidth>
+                                <InputLabel htmlFor="phone">Phone Number</InputLabel>
+                                <Input
+                                    onChange={this.handleNumberChange}
+                                    value={this.state.personInfo.number}
+                                    name="phone" type="phone" id="phone" autoComplete="current-phone" />
+                            </FormControl>
+                            <Button
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                                color="primary"
+                                className={classes.submit}
+                                onClick={this.saveSettings}
+                            >
+                                Save
+                            </Button>
+                        </form>
+                    </Paper>
+                </div>
+            </main>
+        );
     }
 }
 
-export default Settings;
+export default withStyles(styles)(Settings);

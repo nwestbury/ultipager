@@ -25,3 +25,16 @@ body {
 .linkNoStyle {
   text-decoration: none; color: white;
 }
+
+.settings-wrapper {
+  margin-left: 25%;
+  width: 50%;
+}
+
+.nav-bar {
+  background-color: #4fa82f
+}
+
+.button {
+  background-color: #4fa82f
+}
