@@ -13,7 +13,7 @@ from main.models import Error, PhoneNumber
 error_schema = schemas.ErrorSchema()
 error_search_schema = schemas.ErrorSearchSchema()
 phone_number_schema = schemas.PhoneNumber()
-twilio_service = sms.SMS()
+twilio_service = sms.SMS(debug=True)
 
 
 @app.route('/')
@@ -131,6 +131,8 @@ def get_errors(projectname):
 
     if errors:
         return jsonify({'errors': errors}), 422
+    if data is None:
+        return jsonify({'errors': ['No data passed']}), 400
 
     sort_by = data.get('sort_by', 'time')
     asc_desc = asc if data.get('sort_order') == 'asc' else desc
@@ -145,9 +147,9 @@ def get_errors(projectname):
 
     q = Error.query.filter(Error.project_name == projectname)
     if start_date:
-        q = q.filter(Error.time >= datetime.fromisoformat(start_date))
+        q = q.filter(Error.time >= start_date)
     if end_date:
-        q = q.filter(Error.time <= datetime.fromisoformat(end_date))
+        q = q.filter(Error.time <= end_date)
     if message:
         q = q.filter(Error.message.contains(message))
     if type_:
