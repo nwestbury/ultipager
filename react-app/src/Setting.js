@@ -8,10 +8,8 @@ import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-import { greenA100 } from 'material-ui/styles/colors';
-import { green100 } from 'material-ui/styles/colors';
-import { green200 } from 'material-ui/styles/colors';
 
+const styledBy = (property, mapping) => props => mapping[props[property]];
 const styles = theme => ({
     main: {
         width: 'auto',
@@ -38,6 +36,10 @@ const styles = theme => ({
     },
     submit: {
         marginTop: theme.spacing.unit * 3,
+        background: styledBy('color', {
+            default: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+            blue: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
+        }),
     },
 });
 class Settings extends Component {

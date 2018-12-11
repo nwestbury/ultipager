@@ -35,10 +35,7 @@ body {
   background-color: #4fa82f
 }
 
-.button {
-  background-color: #4fa82f
-
-  .error-page-body {
+.error-page-body {
   margin-left: 5%;
   width: 90%;
 }
