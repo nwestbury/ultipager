@@ -17,7 +17,6 @@ class ErrorPage extends Component {
                 endDate: '',
                 content: ''
             },
-            errorlist: [],
         };
 
         this.getRealtimeErrorData = this.getRealtimeErrorData.bind(this);
