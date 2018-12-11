@@ -28,6 +28,7 @@ class PhoneNumber(Schema):
 
 
 class ErrorSearchSchema(Schema):
+    error_id = fields.Int([validate.Range(min=1)])
     sort_by = fields.String(validate=[validate.OneOf(['time', 'message', 'type'])])
     sort_order = fields.String(validate=[validate.OneOf(['asc', 'desc'])])
     index = fields.Int(validate=[validate.Range(min=0, max=1000)])

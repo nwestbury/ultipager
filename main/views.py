@@ -1,18 +1,19 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask import render_template, jsonify, request, redirect, url_for
+from flask_socketio import send
 import json
+from marshmallow import ValidationError
 from sqlalchemy.sql import exists, and_
 from sqlalchemy import asc, desc
-from marshmallow import ValidationError
-from flask_socketio import send
 
-from main import app, schemas, db, socketio
+from main import app, schemas, db, socketio, sms
 from main.models import Error, PhoneNumber
 
 
 error_schema = schemas.ErrorSchema()
 error_search_schema = schemas.ErrorSearchSchema()
 phone_number_schema = schemas.PhoneNumber()
+twilio_service = sms.SMS()
 
 
 @app.route('/')
@@ -22,7 +23,8 @@ def index():
 
 @app.route('/<projectname>', methods=['GET'])
 @app.route('/<projectname>/settings', methods=['GET'])
-def project(projectname):
+@app.route('/<projectname>/<int:errorid>', methods=['GET'])
+def project(projectname=None, errorid=None):
     return render_template('index.html')
 
 @app.route('/<projectname>/add_error', methods=['POST'])
@@ -55,8 +57,25 @@ def post_error(projectname):
 
     db.session.add(err)
     db.session.commit()
-
     socketio.send(err.serialize, namespace='/' + projectname)
+
+    r = PhoneNumber.query.filter(PhoneNumber.project_name == projectname).first()
+    today = datetime.today()
+    grace_time = today - timedelta(seconds=10)
+
+    if r and (not r.last_sent or r.last_sent < grace_time):
+        url = f"{request.host_url}{projectname}/{err.id}"
+
+        # SMS messages are limited to 160 chars, so try our best to stay at it
+        between = ", a new error was found: "
+        sms_limit = 160 - len(url) - len(between)
+        name_length = max(0, sms_limit)
+        message = f"{r.name[:name_length]}{between}{url}"
+
+        r.last_sent = today
+        db.session.commit()
+
+        twilio_service.send(r.phone_number, message)
 
     return jsonify({
         'success': True
@@ -121,6 +140,7 @@ def get_errors(projectname):
     end_date = data.get('end_date')
     message = data.get('message')
     type_ = data.get('type')
+    error_id = data.get('error_id')
     order_by = asc_desc(getattr(Error, sort_by))
 
     q = Error.query.filter(Error.project_name == projectname)
@@ -131,9 +151,10 @@ def get_errors(projectname):
     if message:
         q = q.filter(Error.message.contains(message))
     if type_:
-        q = q.filter(Error.message.contains(type_))
+        q = q.filter(Error.type.contains(type_))
+    if error_id:
+        q = q.filter(Error.id == error_id)
 
-    # TODO add pagination here
     result = q\
         .order_by(order_by)\
         .offset(offset)\
@@ -150,7 +171,6 @@ def get_number(projectname):
             'errors': ['project name is too long'],
         }), 400
 
-    # TODO add pagination here
     r = PhoneNumber.query.filter(PhoneNumber.project_name == projectname).first()
 
     if not r:

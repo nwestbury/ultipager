@@ -1,7 +1,7 @@
 # Quickstart
 
 ## Overview
-Web server using python3.7 and Flask
+Web server using React, Socket.io, Twilio, python3.7 and Flask
 
 ## Depedencies
 ```
@@ -25,7 +25,7 @@ $ flask shell
 $ cp secrets.sh.template secrets.sh
 $ # create secrets.sh based off of secrets.sh.template
 $ vim secrets.sh
-$ bash secrets.sh
+$ . ./secrets.sh  # (in flask context)
 ```
 
 ## Compile Static Assets
@@ -37,5 +37,3 @@ $ npm run build
 ## Run Dev Server
 ```
 $ flask run
-```
-

@@ -27,7 +27,7 @@ class ErrorPage extends Component {
         this.socket = io(document.location.origin + '/' + projectName);
         this.socket.on('message', this.getRealtimeErrorData);
     }
-    getErrorData(options={}) {
+    getErrorData(options) {
         const projectName = this.props.match.params.projectname;
 
         fetch(`/${projectName}/errors`, {
@@ -62,7 +62,14 @@ class ErrorPage extends Component {
     }
 
     componentDidMount() {
-        this.applyFilters();
+        const {errorid} = this.props.match.params;
+
+        const options = {
+            index: this.state.index,
+            limit: this.state.limit,
+        };
+        if (errorid) options.error_id = parseInt(errorid);
+        this.getErrorData(options);
     }
 
     componentWillUnmount() {

@@ -22,6 +22,7 @@ const AppRouter = () => {
 
         <Route path="/:projectname" exact component={ErrorPage} />
         <Route path="/:projectname/settings/" component={Settings} />
+        <Route path="/:projectname/:errorid(\d+)" exact component={ErrorPage} />
       </div>
     </Router>
   );

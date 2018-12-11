@@ -27,6 +27,4 @@ class PhoneNumber(db.Model):
     phone_number = db.Column(db.String(15))
     name = db.Column(db.String(120))
     project_name = db.Column(db.String(120))
-
-    __table_args__ = (db.UniqueConstraint('phone_number', 'project_name',
-                                          name='number_project_uniq'),)
+    last_sent = db.Column(db.DateTime())
