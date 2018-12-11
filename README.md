@@ -22,11 +22,20 @@ $ flask shell
 
 ## Secret Setup
 ```
+$ cp secrets.sh.template secrets.sh
 $ # create secrets.sh based off of secrets.sh.template
+$ vim secrets.sh
 $ bash secrets.sh
+```
+
+## Compile Static Assets
+```
+$ cd react-app
+$ npm run build
 ```
 
 ## Run Dev Server
 ```
-$ python -m flask
+$ flask run
 ```
+

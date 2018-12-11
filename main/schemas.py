@@ -18,9 +18,9 @@ class ErrorSchema(Schema):
 
 
 class PhoneNumber(Schema):
-    phone_number = fields.String(required=True,
-                                 validate=[validate.Length(min=7, max=15),
-                                           isnumeric])
+    number = fields.String(required=True,
+                           validate=[validate.Length(min=7, max=15),
+                                     isnumeric])
     name = fields.String(required=True,
                          validate=[validate.Length(min=1, max=120)])
 

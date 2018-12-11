@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask import render_template, jsonify, request
+from flask import render_template, jsonify, request, redirect, url_for
 import json
 from sqlalchemy.sql import exists, and_
 from sqlalchemy import asc, desc
@@ -17,8 +17,13 @@ phone_number_schema = schemas.PhoneNumber()
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return redirect('/sample', code=302)
 
+
+@app.route('/<projectname>', methods=['GET'])
+@app.route('/<projectname>/settings', methods=['GET'])
+def project(projectname):
+    return render_template('index.html')
 
 @app.route('/<projectname>/add_error', methods=['POST'])
 def post_error(projectname):
@@ -84,16 +89,8 @@ def post_number(projectname):
     if errors:
         return jsonify({'errors': errors}), 422
 
-    already_exists = db.session.query(PhoneNumber.query.filter(
-            PhoneNumber.project_name == projectname,
-            PhoneNumber.phone_number == data['phone_number']
-        ).exists()).scalar()
-
-    if already_exists:
-        return jsonify({'errors': ['already registered for project']}), 400
-
     number = PhoneNumber(name=data['name'],
-                         phone_number=data['phone_number'],
+                         phone_number=data['number'],
                          project_name=projectname)
 
     db.session.query(PhoneNumber).filter(PhoneNumber.project_name == projectname).delete()
@@ -105,30 +102,30 @@ def post_number(projectname):
     })
 
 
-@app.route('/<projectname>/errors', methods=['GET'])
+@app.route('/<projectname>/errors', methods=['POST'])
 def get_errors(projectname):
     if len(projectname) > 120 or not projectname.isalnum():
         return jsonify({
             'errors': ['project name is too long'],
         }), 400
 
-    args = request.args
+    json_data = request.get_json()
     try:
-        data, errors = error_search_schema.load(args)
+        data, errors = error_search_schema.load(json_data)
     except ValidationError as err:
         return jsonify(err.messages), 422
 
     if errors:
         return jsonify({'errors': errors}), 422
 
-    sort_by = args.get('sort_by', 'time')
-    asc_desc = asc if args.get('sort_order') == 'asc' else desc
-    limit = args.get('limit', 50)
-    offset = args.get('index', 0)
-    start_date = args.get('start_date')
-    end_date = args.get('end_date')
-    message = args.get('message')
-    type_ = args.get('type')
+    sort_by = data.get('sort_by', 'time')
+    asc_desc = asc if data.get('sort_order') == 'asc' else desc
+    limit = data.get('limit', 50)
+    offset = data.get('index', 0)
+    start_date = data.get('start_date')
+    end_date = data.get('end_date')
+    message = data.get('message')
+    type_ = data.get('type')
     order_by = asc_desc(getattr(Error, sort_by))
 
     q = Error.query.filter(Error.project_name == projectname)
@@ -163,13 +160,13 @@ def get_number(projectname):
 
     if not r:
         return jsonify({
-            'phone_number': '',
+            'number': '',
             'name': '',
             'success': True,
         })
 
     return jsonify({
-        'phone_number': r.phone_number,
+        'number': r.phone_number,
         'name': r.name,
         'success': True
     })

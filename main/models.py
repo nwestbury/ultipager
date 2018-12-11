@@ -14,6 +14,7 @@ class Error(db.Model):
     def serialize(self):
         """Return object data in easily serializeable format"""
         return {
+            'id': self.id,
             'message': self.message,
             'time': self.time.isoformat(),
             'type': self.type,

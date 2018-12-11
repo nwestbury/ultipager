@@ -1,77 +1,80 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 
 class ErrorPage extends Component {
     constructor() {
-        super()
+        super();
+
         this.state = {
-            dataToDisplay: {},
+            dataToDisplay: [],
             index: 0,
             limit: 50,
-            sort_order: '',
-            sort_by: '',
+            sort_order: 'desc',
+            sort_by: 'time',
             type: '',
             errorFilter: {
                 startDate: '',
                 endDate: '',
                 content: ''
             },
-        }
+            errorlist: [],
+        };
+        this.getErrorData = this.getErrorData.bind(this);
     }
-    getErrorData = (options={}) => {
-        console.log('get error data', options)
+    getErrorData(options={}) {
+        const projectName = this.props.match.params.projectname;
 
-        // fetch('https://mywebsite.com/endpoint/', {
-        //     method: 'POST',
-        //     headers: {
-        //         'Accept': 'application/json',
-        //         'Content-Type': 'application/json',
-        //     },
-        //     body: JSON.stringify(options)
-        // }).then(res => res.json())
-        //     .then(
-        //         (result) => {
-        //             this.setState({
-        //                 dataToDisplay: result
-        //         });
-        //         },
-        //         // Note: it's important to handle errors here
-        //         // instead of a catch() block so that we don't swallow
-        //         // exceptions from actual bugs in components.
-        //         (error) => {
-        //             this.setState({});
-        //         }
-        //     )
+        fetch(`/${projectName}/errors`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(options)
+        })
+        .then(res => res.json())
+        .then((result) => {
+                this.setState({
+                    dataToDisplay: result
+                });
+            },
+            (error) => {
+                console.error('HANDLE THIS ERROR BETTER!');
+            }
+        );
     }
+
     componentDidMount() {
-        this.getErrorData()
+        this.getErrorData();
     }
-    createErrorRow = item => {
-        return (
-            <li key={item} onClick={()=>{}}>{item}</li>
-        )
+
+    createErrorRow(errorItem) {
+        return (<li key={errorItem.id} onClick={()=>{}}>{errorItem.message}</li>);
     }
+
     applyFilters = e => {
         e.preventDefault()
-        const startDate = this.state.errorFilter.startDate;
-        const endDate = this.state.errorFilter.endDate;
-        console.log(new Date(startDate).getTime())
-        console.log(new Date(endDate).getTime())
-        if (startDate != '' && endDate != '' &&
-            (new Date(startDate).getTime() > new Date(endDate).getTime())) {
-            alert('please input valid date range')
+        const {startDate, endDate, content} = this.state.errorFilter;
+
+        if (startDate !== '' && endDate !== '' &&
+            (new Date(startDate) > new Date(endDate))) {
+            alert('Please input valid date range');
         }
-        console.log('apply filters', this.state)
         // send api call, also re-render the component
         const options = {
             sort_order: this.state.sort_order,
             sort_by: this.state.sort_by,
             index: this.state.index,
             limit: this.state.limit,
-            start_date: startDate? new Date(this.state.errorFilter.startDate).toISOString(): '',
-            end_date: endDate? new Date(this.state.errorFilter.endDate).toISOString(): '',
-            message: this.state.errorFilter.content,
-            type: this.state.type
+            type: this.state.type,
         }
+
+        if (startDate) options.start_date = new Date(startDate).toISOString();
+        if (endDate) options.end_date = new Date(endDate).toISOString();
+        if (content) options.message = content;
+        if (this.state.type) options.type = this.state.type;
+
+        console.log('options', options);
+
         this.getErrorData(options)
     }
     handleDateFromChange = e => {
@@ -105,8 +108,7 @@ class ErrorPage extends Component {
         })
     }
     render() {
-        const errorlist = ["error 1", "error 2", "error 3"]
-        const listItems = errorlist.map(this.createErrorRow)
+        const listItems = this.state.dataToDisplay.map(this.createErrorRow);
         return (
             <div className="error-page-main">
                 <div className="header"><h1>ULTI PAGER</h1></div>
@@ -159,7 +161,7 @@ class ErrorPage extends Component {
                 </div>
                 </div>
             </div>
-        )
+        );
     }
 }
 

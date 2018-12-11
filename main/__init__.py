@@ -5,9 +5,10 @@ from flask_socketio import SocketIO
 
 import os
 
-app = Flask(__name__)
 FILE_PATH = os.path.dirname(os.path.realpath(__file__))
-
+STATIC_PATH = os.path.join(FILE_PATH, '..', 'react-app', 'build', 'static')
+TEMPLATE_PATH = os.path.join(FILE_PATH, '..', 'react-app', 'build')
+app = Flask(__name__, static_folder=STATIC_PATH, template_folder=TEMPLATE_PATH)
 
 DB_PATH = os.path.join(FILE_PATH, 'db', 'main.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -22,4 +23,4 @@ socketio = SocketIO(app)
 import main.views  # nopep8
 import main.models  # nopep8
 import main.schemas  # nopep8
-import main.socketio # nopep8
+import main.socketio  # nopep8
