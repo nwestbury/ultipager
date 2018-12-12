@@ -46,7 +46,7 @@ To create errors run:
 curl -X POST http://localhost:5000/test/add_error -d '{"user_agent":"Chrome", "message": "Division by 0", "type": "MathError"}' -H "Content-Type: application/json"
 
 # To Add/Change a Number
-curl -X POST http://localhost:5000/test/add_number -d '{"name": "John Smith", "phone_number":"12345678"}' -H "Content-Type: application/json"
+curl -X POST http://localhost:5000/test/add_number -d '{"name": "John Smith", "number":"12345678"}' -H "Content-Type: application/json"
 
 # To Search Errors
 curl -X POST http://localhost:5000/test/errors -d '{"sort_by": "time", "limit": 50, "sort_order": "desc", "start_date": "2017-12-11T08:52:34.817Z", "message": "test"}' -H "Content-Type: application/json"

@@ -92,7 +92,17 @@ class Settings extends Component {
                 name: name,
                 number: validatedNumber,
             })
-        });
+        })
+        .then(res => res.json())
+        .then(
+            (result) => {
+                if (result.errors) {
+                    // handle this please
+                }
+            },
+            (error) => {
+            }
+        );
     }
     handleNameChange(e) {
         const personInfo = { name: e.target.value, number: this.state.personInfo.number };
@@ -108,7 +118,6 @@ class Settings extends Component {
     }
     render() {
         const { classes } = this.props;
-        console.log('classes.submit', classes.submit)
         return (
             <main className={classes.main}>
                 <NavBar isSettings="true"></NavBar>
