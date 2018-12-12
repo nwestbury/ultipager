@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import io from 'socket.io-client';
+import moment from 'moment';
 
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -166,13 +167,11 @@ class ErrorTable extends React.Component {
                     </TableHead>
                     <TableBody>
                         {dataToDisplay.map(row => {
-                            console.log('test', row.time);
-
-                            let startTime = new Date(row.time);
-                            startTime = new Date( startTime.getTime() + ( startTime.getTimezoneOffset() * 60000 ) );
+                            const utc = moment.utc(row.time).toDate();
+                            const local = moment(utc).local().format('YYYY-MM-DD HH:mm:ss');
                         return (
                             <TableRow key={row.id}>
-                            <TableCell>{startTime.toLocaleString()}</TableCell>
+                            <TableCell>{local}</TableCell>
                             <TableCell>{row.type}</TableCell>
                             <TableCell>{row.message}</TableCell>
                             <TableCell>{row.user_agent}</TableCell>
