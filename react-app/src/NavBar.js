@@ -27,7 +27,7 @@ const NavBar = (props) => {
     const projectName = document.location.pathname.split('/')[1];
     const name = 'UltiPager' + (isSettings ? ': Settings' : '');
     const icon = isSettings ? <HomeIcon /> : <SettingsIcon />;
-    const linkTo = isSettings ? `/${projectName}` : `/${projectName}/settings`;
+    const linkTo = isSettings ? `/${projectName}/errors` : `/${projectName}/settings`;
     return (
     <AppBar position="static">
         <Toolbar className="nav-bar">

@@ -22,6 +22,7 @@ def index():
 
 
 @app.route('/<projectname>', methods=['GET'])
+@app.route('/<projectname>/errors', methods=['GET'])
 @app.route('/<projectname>/settings', methods=['GET'])
 @app.route('/<projectname>/<int:errorid>', methods=['GET'])
 def project(projectname=None, errorid=None):

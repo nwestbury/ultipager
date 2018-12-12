@@ -20,7 +20,7 @@ const styles = {
 };
 
 const Welcome = (props) => {
-    const { classes, isSettings} = props;
+    const { classes } = props;
     const projectName = document.location.pathname.split('/')[1];
     const linkTo = `/${projectName}/errors`;
     return (
