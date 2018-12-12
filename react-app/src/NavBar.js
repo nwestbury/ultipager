@@ -22,7 +22,7 @@ const styles = {
   },
 };
 
-const AppRouter = (props) => {
+const NavBar = (props) => {
     const { classes, isSettings} = props;
     const projectName = document.location.pathname.split('/')[1];
     const name = 'UltiPager' + (isSettings ? ': Settings' : '');
@@ -44,6 +44,6 @@ const AppRouter = (props) => {
   );
 }
 
-export default withStyles(styles)(AppRouter);
+export default withStyles(styles)(NavBar);
         
         
