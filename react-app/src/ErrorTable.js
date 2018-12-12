@@ -141,7 +141,6 @@ class ErrorTable extends React.Component {
             nextProps.errorFilter.startDate !== this.state.startDate ||
             nextProps.errorFilter.endDate !== this.state.endDate ||
             nextProps.errorFilter.content !== this.state.content) {
-            console.log('NEW ???!??!', nextProps.errorFilter);
             this.setState({ errorFilter: nextProps.errorFilter }, this.applyFilters);
         }
     }
@@ -150,8 +149,6 @@ class ErrorTable extends React.Component {
         const { classes } = this.props;
         const { limit, page, index, dataToDisplay, totalData } = this.state;
         const emptyRows = limit - Math.min(limit, totalData - index);
-
-        console.log('test', dataToDisplay);
 
         return (
             <Paper className={classes.root}>
