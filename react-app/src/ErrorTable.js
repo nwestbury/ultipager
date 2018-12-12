@@ -74,7 +74,7 @@ class ErrorTable extends React.Component {
             const dataToDisplay = [errorObj, ...this.state.dataToDisplay]
                                   .slice(0, this.state.limit);
 
-            this.setState({dataToDisplay});
+            this.setState({dataToDisplay, totalData: this.state.totalData + 1});
         }
     }
 
@@ -159,10 +159,10 @@ class ErrorTable extends React.Component {
                     <Table className={classes.table}>
                     <TableHead>
                         <TableRow>
-                            <TableCell>Time</TableCell>
-                            <TableCell>Type</TableCell>
-                            <TableCell>Message</TableCell>
-                            <TableCell>User Agent</TableCell>
+                            <TableCell className="w20">Time</TableCell>
+                            <TableCell className="w10">Type</TableCell>
+                            <TableCell className="w50">Message</TableCell>
+                            <TableCell className="w20">User Agent</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -171,10 +171,10 @@ class ErrorTable extends React.Component {
                             const local = moment(utc).local().format('YYYY-MM-DD HH:mm:ss');
                         return (
                             <TableRow key={row.id}>
-                            <TableCell>{local}</TableCell>
-                            <TableCell>{row.type}</TableCell>
-                            <TableCell>{row.message}</TableCell>
-                            <TableCell>{row.user_agent}</TableCell>
+                                <TableCell className="w20">{local}</TableCell>
+                                <TableCell className="w10">{row.type}</TableCell>
+                                <TableCell className="w50">{row.message}</TableCell>
+                                <TableCell className="w20">{row.user_agent}</TableCell>
                             </TableRow>
                         );
                         })}
@@ -186,18 +186,18 @@ class ErrorTable extends React.Component {
                     </TableBody>
                     <TableFooter>
                         <TableRow>
-                        <TablePagination
-                            rowsPerPageOptions={[10, 25, 50]}
-                            colSpan={3}
-                            count={totalData}
-                            rowsPerPage={limit}
-                            page={page}
-                            SelectProps={{
-                                native: true,
-                            }}
-                            onChangePage={this.handleChangePage}
-                            onChangeRowsPerPage={this.handleChangeRowsPerPage}
-                        />
+                            <TablePagination
+                                rowsPerPageOptions={[10, 25, 50]}
+                                colSpan={4}
+                                count={totalData}
+                                rowsPerPage={limit}
+                                page={page}
+                                SelectProps={{
+                                    native: true,
+                                }}
+                                onChangePage={this.handleChangePage}
+                                onChangeRowsPerPage={this.handleChangeRowsPerPage}
+                            />
                         </TableRow>
                     </TableFooter>
                     </Table>

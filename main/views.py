@@ -27,6 +27,7 @@ def index():
 def project(projectname=None, errorid=None):
     return render_template('index.html')
 
+
 @app.route('/<projectname>/add_error', methods=['POST'])
 def post_error(projectname):
     if len(projectname) > 120 or not projectname.isalnum():
