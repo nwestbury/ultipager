@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import IconButton from '@material-ui/core/IconButton';
 import FlightTakeoff from '@material-ui/icons/FlightTakeoff';
 import { withStyles } from '@material-ui/core/styles';
-import { grey400 } from "material-ui/styles/colors";
 
 const styles = {
   root: {
@@ -15,7 +14,7 @@ const styles = {
   },
   FlightTakeoff: {
       fontSize: "180px",
-      color: grey400
+      color: "#BDBDBD"
   }
 };
 
