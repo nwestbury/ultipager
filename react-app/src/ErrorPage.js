@@ -2,7 +2,12 @@ import React, { Component } from 'react';
 
 import NavBar from './NavBar';
 import ErrorTable from './ErrorTable';
-import Button from '@material-ui/core/Button';
+import FormControl from '@material-ui/core/FormControl';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import TextField from '@material-ui/core/TextField';
+import Grid from '@material-ui/core/Grid';
+
 
 class ErrorPage extends Component {
     constructor() {
@@ -28,6 +33,7 @@ class ErrorPage extends Component {
         })
     }
     handleDateToChange = e => {
+        console.log('UPDATE to?!?!', e.target.value);
         const errorFilter = { 
             startDate: this.state.errorFilter.startDate, 
             endDate: e.target.value,
@@ -59,43 +65,50 @@ class ErrorPage extends Component {
                     <div className="error-filter">
                         <div className="error-filter-header"><h2>Log Filter</h2></div>
                         <div className="error-filter-body">
-                            <div className="filter-row">
-                                <form onSubmit={this.applyFilters}>
-                                    <div>
-                                        <span className="date-filter-from">
-                                            <b>Date From</b>
-                                            <input
+                            <form className="filter-row">
+                                <Grid container spacing={16}>
+                                    <Grid item xs={4}>
+                                        <FormControl margin="normal" fullWidth>
+                                            <TextField
+                                                id="dateFrom"
+                                                label="Date From"
                                                 type="datetime-local"
+                                                defaultValue=""
+                                                InputLabelProps={{
+                                                    shrink: true,
+                                                }}
+                                                value={this.state.errorFilter.startDate}
                                                 onChange={this.handleDateFromChange}
-                                                value={this.state.errorFilter.startDate} 
                                             />
-                                        </span>
-                                        <span className="date-filter-to">
-                                            <b>To</b>
-                                            <input
+                                        </FormControl>
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <FormControl margin="normal" fullWidth>
+                                            <TextField
+                                                id="dateTo"
+                                                label="Date To"
                                                 type="datetime-local"
+                                                defaultValue=""
+                                                InputLabelProps={{
+                                                    shrink: true,
+                                                }}
+                                                value={this.state.errorFilter.endDate}
                                                 onChange={this.handleDateToChange}
-                                                value={this.state.errorFilter.endDate} 
                                             />
-                                        </span>
-                                    </div>
-                                    <div>
-                                        <span className="content-filter">
-                                            <b>Content Filter</b>
-                                            <input
-                                                placeholder="Content"
+                                        </FormControl>
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <FormControl margin="normal" required fullWidth>
+                                            <InputLabel htmlFor="name">Message Filter</InputLabel>
+                                            <Input
                                                 onChange={this.handleContentChange}
-                                                value={this.state.errorFilter.content} 
-                                            />  
-                                        </span>
-                                        <span className="filter-apply">
-                                            <Button type="submit" variant="contained" color="primary">
-                                                Apply
-                                            </Button>
-                                        </span>
-                                    </div>
-                                </form>
-                            </div>
+                                                placeholder="Exception"
+                                                value={this.state.errorFilter.content}
+                                                id="message" name="message" autoComplete="message" />
+                                        </FormControl>
+                                    </Grid>
+                                </Grid>
+                            </form>
                         </div>
                     </div>
                     <div className="error-log">

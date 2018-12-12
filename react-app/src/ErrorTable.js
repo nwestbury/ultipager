@@ -35,6 +35,11 @@ class ErrorTable extends React.Component {
             sort_order: 'desc',
             sort_by: 'time',
             type: '',
+            errorFilter: {
+                startDate: '',
+                endDate: '',
+                content: '',
+            },
         };
 
         this.getRealtimeErrorData = this.getRealtimeErrorData.bind(this);
@@ -97,7 +102,7 @@ class ErrorTable extends React.Component {
 
     applyFilters = e => {
         if (e) e.preventDefault();
-        const {startDate, endDate, content} = this.props.errorFilter;
+        const {startDate, endDate, content} = this.state.errorFilter;
 
         if (startDate !== '' && endDate !== '' &&
             (new Date(startDate) > new Date(endDate))) {
@@ -130,62 +135,76 @@ class ErrorTable extends React.Component {
         this.setState({ limit: parseInt(event.target.value) }, this.applyFilters);
     }
 
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.errorFilter !== this.state.errorFilter || 
+            nextProps.errorFilter.startDate !== this.state.startDate ||
+            nextProps.errorFilter.endDate !== this.state.endDate ||
+            nextProps.errorFilter.content !== this.state.content) {
+            console.log('NEW ???!??!', nextProps.errorFilter);
+            this.setState({ errorFilter: nextProps.errorFilter }, this.applyFilters);
+        }
+    }
+
     render() {
-    const { classes } = this.props;
-    const { limit, page, index, dataToDisplay, totalData } = this.state;
-    const emptyRows = limit - Math.min(limit, totalData - index);
+        const { classes } = this.props;
+        const { limit, page, index, dataToDisplay, totalData } = this.state;
+        const emptyRows = limit - Math.min(limit, totalData - index);
 
-    console.log('test', dataToDisplay);
+        console.log('test', dataToDisplay);
 
-    return (
-        <Paper className={classes.root}>
-            <div className={classes.tableWrapper}>
-                <Table className={classes.table}>
-                <TableHead>
-                    <TableRow>
-                        <TableCell>Time</TableCell>
-                        <TableCell>Type</TableCell>
-                        <TableCell>Message</TableCell>
-                        <TableCell>User Agent</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {dataToDisplay.map(row => {
-                    return (
-                        <TableRow key={row.id}>
-                        <TableCell>{row.time}</TableCell>
-                        <TableCell>{row.type}</TableCell>
-                        <TableCell>{row.message}</TableCell>
-                        <TableCell>{row.user_agent}</TableCell>
+        return (
+            <Paper className={classes.root}>
+                <div className={classes.tableWrapper}>
+                    <Table className={classes.table}>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Time</TableCell>
+                            <TableCell>Type</TableCell>
+                            <TableCell>Message</TableCell>
+                            <TableCell>User Agent</TableCell>
                         </TableRow>
-                    );
-                    })}
-                    {emptyRows > 0 && (
-                    <TableRow style={{ height: 48 * emptyRows }}>
-                        <TableCell colSpan={6} />
-                    </TableRow>
-                    )}
-                </TableBody>
-                <TableFooter>
-                    <TableRow>
-                    <TablePagination
-                        rowsPerPageOptions={[10, 25, 50]}
-                        colSpan={3}
-                        count={totalData}
-                        rowsPerPage={limit}
-                        page={page}
-                        SelectProps={{
-                            native: true,
-                        }}
-                        onChangePage={this.handleChangePage}
-                        onChangeRowsPerPage={this.handleChangeRowsPerPage}
-                    />
-                    </TableRow>
-                </TableFooter>
-                </Table>
-            </div>
-        </Paper>
-        );
+                    </TableHead>
+                    <TableBody>
+                        {dataToDisplay.map(row => {
+                            console.log('test', row.time);
+
+                            let startTime = new Date(row.time);
+                            startTime = new Date( startTime.getTime() + ( startTime.getTimezoneOffset() * 60000 ) );
+                        return (
+                            <TableRow key={row.id}>
+                            <TableCell>{startTime.toLocaleString()}</TableCell>
+                            <TableCell>{row.type}</TableCell>
+                            <TableCell>{row.message}</TableCell>
+                            <TableCell>{row.user_agent}</TableCell>
+                            </TableRow>
+                        );
+                        })}
+                        {emptyRows > 0 && (
+                        <TableRow style={{ height: 48 * emptyRows }}>
+                            <TableCell colSpan={6} />
+                        </TableRow>
+                        )}
+                    </TableBody>
+                    <TableFooter>
+                        <TableRow>
+                        <TablePagination
+                            rowsPerPageOptions={[10, 25, 50]}
+                            colSpan={3}
+                            count={totalData}
+                            rowsPerPage={limit}
+                            page={page}
+                            SelectProps={{
+                                native: true,
+                            }}
+                            onChangePage={this.handleChangePage}
+                            onChangeRowsPerPage={this.handleChangeRowsPerPage}
+                        />
+                        </TableRow>
+                    </TableFooter>
+                    </Table>
+                </div>
+            </Paper>
+            );
     }
 }
 
