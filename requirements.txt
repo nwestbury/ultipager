@@ -15,7 +15,7 @@ MarkupSafe==1.1.0
 marshmallow==2.16.3
 marshmallow-sqlalchemy==0.15.0
 monotonic==1.5
-PyJWT==1.7.1
+PyJWT==2.4.0
 PySocks==1.6.8
 python-engineio==3.0.0
 python-socketio==2.1.2
